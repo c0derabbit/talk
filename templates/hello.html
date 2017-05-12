@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello, {{ name }}!</title>
+    <link rel="stylesheet" href="../static/simple.css" />
+  </head>
+  <body>
+    <div class="main">
+      {% for msg in messages %}
+        <p>From {{ msg.sender }} to {{ msg.receiver }}: {{ msg.message }}</p>
+      {% endfor %}
+    </div>
+  </body>
+</html>
