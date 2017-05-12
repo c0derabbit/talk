@@ -1,0 +1,17 @@
+{% extends "layout.html" %}
+{% block body %}
+  {% if session.logged_in %}
+
+  <form name="msg" action="{{ url_for('send_message') }}" method="post">
+    Send a message to Samu:
+    <input type="text" name="message" id="send_msg_input" value="" onUnfocus="msg.submit();">
+  </form>
+    {% for msg in messages %}
+      <p>From {{ msg.sender }} to {{ msg.receiver }}: {{ msg.message }}</p>
+    {% else %}
+      <p>Sorry, you have no messages.</p>
+    {% endfor %}
+
+  {% endif %}
+
+{% endblock %}

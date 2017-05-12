@@ -37,14 +37,37 @@ def show_messages():
 	cursor = db.execute('select sender, receiver, message from messages order by id desc')
 	messages = cursor.fetchall()
 	# username = request.cookies.get('username') or 'stranger'
-	return render_template('hello.html', messages=messages)
+	return render_template('messages.html', messages=messages)
 
-@app.route('/send/<to>/<message>', methods=['GET','POST'])
-def send_message(to, message):
+@app.route('/send', methods=['POST'])
+def send_message():
+	user = 'Esz'
+	to = 'Sam'
 	db = get_db()
 	db.execute('insert into messages (sender, receiver, message) values (?, ?, ?)',
-		["Esz", to, message])
+		[user, to, request.form['message']])
 	db.commit()
+	flash('new msg sent')
+	return redirect(url_for('show_messages'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	error = None
+	if request.method == 'POST':
+		if request.form['username'] != app.config['USERNAME']:
+			error = 'Invalid username'
+		elif request.form['password'] != app.config['PASSWORD']:
+			error = 'Incorrect password'
+		else:
+			session['logged_in'] = True
+			flash('You logged in successfully')
+			return redirect(url_for('show_messages'))
+	return render_template('login.html', error=error)
+
+@app.route('/logout')
+def logout():
+	session.pop('logged_in', None)
+	flash('You were logged out')
 	return redirect(url_for('show_messages'))
 
 @app.errorhandler(404)
