@@ -1,5 +1,5 @@
 body {
-  font: 15px/1.5 -apple-system, BlinkMacSystemFont, 'Segoie UI', 'Roboto',
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoie UI', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
     'Helvetica Neue', sans-serif;
   color: #333;
@@ -19,18 +19,8 @@ nav {
   right: 0;
 }
 
-h2,
-h3 {
-  margin-top: 2em;
-  margin-bottom: 0;
-}
-
 p {
   margin-bottom: .5em;
-}
-
-li {
-  margin-bottom: .2em;
 }
 
 a {
@@ -49,16 +39,35 @@ a:hover {
   -webkit-text-decoration-skip: ink;
 }
 
+#login {
+  width: 240px;
+  display: flex;
+  flex-flow: column;
+  margin: 0 auto;
+}
+
+label {
+  font-size: .9rem;
+  display: block;
+}
+
+input {
+  margin-bottom: .5em;
+  padding: .3em .1em;
+}
+
+button,
+input[type="submit"] {
+  margin-top: .6em;
+  padding: .5em;
+}
+
 hr {
   height: 0;
   padding: 0;
   border: 0;
   margin: 2em auto;
   border-top: 1px solid #ccc;
-}
-
-dt {
-  margin-top: .2em;
 }
 
 @media (min-width: 720px) {
