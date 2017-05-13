@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <title>Hello</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/7.0.0/normalize.min.css">
     <link rel="stylesheet" href="../static/simple.css" />
   </head>
   <body>
@@ -10,9 +11,9 @@
       <h1>Talk</h1>
       <nav>
         {% if not session.logged_in %}
-          <a href="{{ url_for('login') }}">log in</a>
+          <a href="{{ url_for('login') }}">Log in</a>
         {% else %}
-          <a href="{{ url_for('logout') }}">log out</a>
+          <a href="{{ url_for('logout') }}">Log out</a>
         {% endif %}
       </nav>
 

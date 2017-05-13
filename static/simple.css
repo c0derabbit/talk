@@ -10,6 +10,13 @@ body {
   width: 99%;
   max-width: 38rem;
   margin: 0 auto 2em;
+  position: relative;
+}
+
+nav {
+  position: absolute;
+  top: 0;
+  right: 0;
 }
 
 h2,
