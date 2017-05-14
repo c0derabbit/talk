@@ -1,0 +1,15 @@
+a {
+  color: #4288bb;
+          text-decoration-color: #bad7ec;
+  -webkit-text-decoration-color: #bad7ec;
+          text-decoration-skip: ink;
+  -webkit-text-decoration-skip: ink;
+}
+
+a:hover {
+  color: #115c94;
+          text-decoration-color: #115c94;
+  -webkit-text-decoration-color: #115c94;
+          text-decoration-skip: ink;
+  -webkit-text-decoration-skip: ink;
+}

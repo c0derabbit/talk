@@ -9,7 +9,7 @@ app.config.update(dict(
 	# DATABASE=os.path.join(app.root_path, 'talk.db'),
 	DATABASE='/tmp/talk.db',
 	SECRET_KEY='dev key',
-	USERNAME='admin',
+	USERNAME='eszter',
 	PASSWORD='secret'
 ))
 # for env-specific config files:
@@ -41,8 +41,8 @@ def show_messages():
 
 @app.route('/send', methods=['POST'])
 def send_message():
-	user = 'Esz'
-	to = 'Sam'
+	user = 'eszter'
+	to = 'Samu'
 	db = get_db()
 	db.execute('insert into messages (sender, receiver, message) values (?, ?, ?)',
 		[user, to, request.form['message']])

@@ -1,19 +1,23 @@
+html {
+  height: 100%;
+}
+
 body {
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
   font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoie UI', 'Roboto',
     'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
     'Helvetica Neue', sans-serif;
   color: #333;
-  padding: 1em;
-  overflow: hidden;
 }
 
 .main {
-  width: 99%;
+  width: 90%;
+  height: 100%;
   max-width: 30rem;
-  margin: 0 auto 2em;
+  margin: 1em auto 2em;
   position: relative;
-  display: flex;
-  flex-flow: column;
 }
 
 nav {
@@ -25,30 +29,11 @@ nav {
 h1,
 h4 {
   margin-top: 0;
-}
-
-h4 {
   margin-bottom: .5em;
 }
 
 p {
   margin-bottom: .5em;
-}
-
-a {
-  color: #4288bb;
-          text-decoration-color: #bad7ec;
-  -webkit-text-decoration-color: #bad7ec;
-          text-decoration-skip: ink;
-  -webkit-text-decoration-skip: ink;
-}
-
-a:hover {
-  color: #115c94;
-          text-decoration-color: #115c94;
-  -webkit-text-decoration-color: #115c94;
-          text-decoration-skip: ink;
-  -webkit-text-decoration-skip: ink;
 }
 
 label {
@@ -78,13 +63,13 @@ input[type="submit"] {
 #send_message {
   width: 100%;
   position: fixed;
-  bottom: 2em;
+  bottom: 1em;
 }
 
 textarea {
-  width: 99%;
+  width: 90%;
   max-width: 30rem;
-  height: 60px;
+  height: 3em;
 }
 
 hr {
@@ -99,8 +84,7 @@ hr {
   list-style: none;
   padding: 0;
   margin-right: -15px;
-  height: 59vh;
-  flex-grow: 3;
+  height: calc(100% - 14em);
   overflow: scroll;
 }
 
@@ -122,10 +106,4 @@ hr {
 
 .received .message {
   background: #eaf2fc;
-}
-
-@media (min-width: 720px) {
-  .main {
-    margin: 3em auto 4em;
-  }
 }
