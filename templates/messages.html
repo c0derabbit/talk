@@ -8,7 +8,11 @@
       {% for message in messages | reverse %}
         <li class="{{ 'sent' if message.sender == session['username'] else 'received'}}">
           <time>{{ message.sent_at }}</time>
-          <span class="message">{{ message.message }}</span>
+          <span class="message">
+            {% for line in message.message.split('\n') %}
+              {{ line }}<br>
+            {% endfor %}
+          </span>
         </li>
       {% else %}
         <p>Sorry, you have no messages.</p>
