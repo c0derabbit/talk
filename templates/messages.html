@@ -16,7 +16,7 @@
 
     <form id="send_message" name="send_message" action="{{ url_for('send_message') }}" method="post">
       <label for="message">Send a message to {{ partner }}:</label>
-      <textarea name="message" id="send_msg_input"
+      <textarea autofocus name="message" id="send_msg_input"
         placeholder="Type your message here..."></textarea>
     </form>
 
