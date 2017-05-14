@@ -9,7 +9,8 @@ app.config.update(dict(
 	# DATABASE=os.path.join(app.root_path, 'talk.db'),
 	DATABASE='/tmp/talk.db',
 	SECRET_KEY='dev key',
-	USERNAME='eszter',
+	USER1='eszter',
+	USER2='Samu',
 	PASSWORD='secret'
 ))
 
@@ -33,7 +34,7 @@ def show_messages():
 	db = get_db()
 	cursor = db.execute('select sender, receiver, message from messages order by id desc')
 	messages = cursor.fetchall()
-	session['partner'] = 'Samu'
+	session['partner'] = 'Samu' if session['username'] == 'eszter' else 'Eszter'
 	return render_template('messages.html', messages=messages, partner=session['partner'])
 
 @app.route('/send', methods=['POST'])
@@ -48,9 +49,9 @@ def send_message():
 def login():
 	error = None
 	if request.method == 'POST':
-		if request.form['username'] != app.config['USERNAME']:
-			error = 'Invalid username'
-		elif request.form['password'] != app.config['PASSWORD']:
+		# if request.form['username'] != app.config['USER1'] or request.form['username'] != app.config['USER2']:
+		# 	error = 'Invalid username'
+		if request.form['password'] != app.config['PASSWORD']:
 			error = 'Incorrect password'
 		else:
 			session['logged_in'] = True
