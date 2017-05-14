@@ -107,3 +107,10 @@ hr {
 .received .message {
   background: #eaf2fc;
 }
+
+time {
+  display: block;
+  font-size: .7em;
+  color: #bbb;
+  margin-right: 13px;
+}

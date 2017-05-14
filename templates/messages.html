@@ -5,9 +5,10 @@
     <h4>You are talking to {{ partner }}</h4>
 
     <ul class="messages">
-      {% for msg in messages | reverse %}
-        <li class="{{ 'sent' if msg.sender == session['username'] else 'received'}}">
-          <span class="message">{{ msg.message }}</span>
+      {% for message in messages | reverse %}
+        <li class="{{ 'sent' if message.sender == session['username'] else 'received'}}">
+          <time>{{ message.sent_at }}</time>
+          <span class="message">{{ message.message }}</span>
         </li>
       {% else %}
         <p>Sorry, you have no messages.</p>

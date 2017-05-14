@@ -1,5 +1,6 @@
 import os
 import sqlite3
+from datetime import datetime as d
 from flask import Flask, request, session, g, redirect, url_for, abort, \
 	render_template, flash
 
@@ -32,7 +33,7 @@ def close_db(error):
 @app.route('/')
 def show_messages():
 	db = get_db()
-	cursor = db.execute('select sender, receiver, message from messages order by id desc')
+	cursor = db.execute('select sender, receiver, sent_at, message from messages order by id desc')
 	messages = cursor.fetchall()
 	session['partner'] = 'Samu' if session['username'] == 'eszter' else 'Eszter'
 	return render_template('messages.html', messages=messages, partner=session['partner'])
@@ -40,8 +41,9 @@ def show_messages():
 @app.route('/send', methods=['POST'])
 def send_message():
 	db = get_db()
-	db.execute('insert into messages (sender, receiver, message) values (?, ?, ?)',
-		[session['username'], session['partner'], request.form['message']])
+	current_datetime = d.now().strftime('%y.%m.%d %H:%m')
+	db.execute('insert into messages (sender, receiver, sent_at, message) values (?, ?, ?, ?)',
+		[session['username'], session['partner'], current_datetime, request.form['message']])
 	db.commit()
 	return redirect(url_for('show_messages'))
 
