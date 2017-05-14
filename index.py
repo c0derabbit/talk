@@ -12,9 +12,6 @@ app.config.update(dict(
 	USERNAME='eszter',
 	PASSWORD='secret'
 ))
-# for env-specific config files:
-app.config.from_envvar('TALK_SETTINGS', silent=True)
-# The silent switch just tells Flask to not complain if no such environment key is set.
 
 def connect_db():
 	db = sqlite3.connect(app.config['DATABASE'])
@@ -36,18 +33,15 @@ def show_messages():
 	db = get_db()
 	cursor = db.execute('select sender, receiver, message from messages order by id desc')
 	messages = cursor.fetchall()
-	# username = request.cookies.get('username') or 'stranger'
-	return render_template('messages.html', messages=messages)
+	session['partner'] = 'Samu'
+	return render_template('messages.html', messages=messages, partner=session['partner'])
 
 @app.route('/send', methods=['POST'])
 def send_message():
-	user = 'eszter'
-	to = 'Samu'
 	db = get_db()
 	db.execute('insert into messages (sender, receiver, message) values (?, ?, ?)',
-		[user, to, request.form['message']])
+		[session['username'], session['partner'], request.form['message']])
 	db.commit()
-	flash('new msg sent')
 	return redirect(url_for('show_messages'))
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -60,7 +54,7 @@ def login():
 			error = 'Incorrect password'
 		else:
 			session['logged_in'] = True
-			flash('You logged in successfully')
+			session['username'] = request.form['username']
 			return redirect(url_for('show_messages'))
 	return render_template('login.html', error=error)
 
@@ -68,7 +62,7 @@ def login():
 def logout():
 	session.pop('logged_in', None)
 	flash('You were logged out')
-	return redirect(url_for('show_messages'))
+	return redirect(url_for('login'))
 
 @app.errorhandler(404)
 def page_not_found(error):

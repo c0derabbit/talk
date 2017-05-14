@@ -2,11 +2,11 @@
 {% block body %}
   {% if session.logged_in %}
 
-    <h4>You are talking to Samu</h4>
+    <h4>You are talking to {{ partner }}</h4>
 
     <ul class="messages">
       {% for msg in messages | reverse %}
-        <li class="{{ 'sent' if msg.sender == 'Esz' else 'received'}}">
+        <li class="{{ 'sent' if msg.sender == session['username'] else 'received'}}">
           <span class="message">{{ msg.message }}</span>
         </li>
       {% else %}
@@ -15,7 +15,7 @@
     </ul>
 
     <form id="send_message" name="send_message" action="{{ url_for('send_message') }}" method="post">
-      <label for="message">Send a message to Samu:</label>
+      <label for="message">Send a message to {{ partner }}:</label>
       <textarea name="message" id="send_msg_input"
         placeholder="Type your message here..."></textarea>
     </form>
