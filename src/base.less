@@ -2,26 +2,24 @@
 @import 'forms';
 @import 'messages';
 
-html {
+html,
+body,
+.main {
   height: 100%;
 }
 
 body {
+  font: 16px/1.5 @primaryFont;
+  color: @textColor;
   padding: 0;
-  height: 100%;
   overflow: hidden;
-  font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoie UI', 'Roboto',
-    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
-    'Helvetica Neue', sans-serif;
-  color: #333;
 }
 
 .main {
-  width: 90%;
-  height: 100%;
-  max-width: 30rem;
-  margin: 1em auto 2em;
+  width: @mainWidth;
+  max-width: @maxWidth;
   position: relative;
+  margin: 1em auto 2em;
 }
 
 nav {
@@ -31,27 +29,23 @@ nav {
 }
 
 h1,
-h4 {
-  margin-top: 0;
-  margin-bottom: .5em;
-}
-
+h4,
 p {
-  margin-bottom: .5em;
+  margin: 0 auto .5em;
 }
 
 a {
-  color: #4288bb;
-          text-decoration-color: #bad7ec;
-  -webkit-text-decoration-color: #bad7ec;
+  color: @linkColor;
+          text-decoration-color: @linkAccent;
+  -webkit-text-decoration-color: @linkAccent;
           text-decoration-skip: ink;
   -webkit-text-decoration-skip: ink;
 }
 
 a:hover {
-  color: #115c94;
-          text-decoration-color: #115c94;
-  -webkit-text-decoration-color: #115c94;
+  color: @linkHover;
+          text-decoration-color: @linkHover;
+  -webkit-text-decoration-color: @linkHover;
           text-decoration-skip: ink;
   -webkit-text-decoration-skip: ink;
 }
