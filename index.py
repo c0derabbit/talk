@@ -4,8 +4,6 @@ from datetime import datetime as d
 from flask import Flask, request, session, g, redirect, url_for, \
 	render_template, flash
 
-# sqlite3 /tmp/talk.db < schema.sql
-
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.update(dict(
