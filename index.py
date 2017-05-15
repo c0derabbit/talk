@@ -1,13 +1,13 @@
 import os
 import sqlite3
 from datetime import datetime as d
-from flask import Flask, request, session, g, redirect, url_for, abort, \
+from flask import Flask, request, session, g, redirect, url_for, \
 	render_template, flash
 
 # sqlite3 /tmp/talk.db < schema.sql
 
 app = Flask(__name__)
-app.config.from_object(__name__) # load config from this file
+app.config.from_object(__name__)
 app.config.update(dict(
 	# DATABASE=os.path.join(app.root_path, 'talk.db'),
 	DATABASE='/tmp/talk.db',
@@ -34,11 +34,14 @@ def close_db(error):
 
 @app.route('/')
 def show_messages():
-	db = get_db()
-	cursor = db.execute('select sender, receiver, sent_at, message from messages order by id desc')
-	messages = cursor.fetchall()
-	session['partner'] = 'Samu' if session['username'] == 'eszter' else 'Eszter'
-	return render_template('messages.html', messages=messages, partner=session['partner'])
+	try:
+		db = get_db()
+		cursor = db.execute('select sender, receiver, sent_at, message from messages order by id desc')
+		messages = cursor.fetchall()
+		session['partner'] = 'Samu' if session['username'] == 'eszter' else 'Eszter'
+		return render_template('messages.html', messages=messages, partner=session['partner'])
+	except KeyError:
+		return redirect(url_for('login'))
 
 @app.route('/send', methods=['POST'])
 def send_message():

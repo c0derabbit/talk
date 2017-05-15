@@ -2,13 +2,17 @@ window.onload = () => {
   const inputField = document.querySelector('input');
   inputField && inputField.focus();
 
+  const messageList = document.querySelector('.messages');
+  if (messageList) {
+    messageList.scrollTop = messageList.scrollHeight;
+  }
+  
   const messageInput = document.querySelector('textarea');
-  messageInput.onkeypress = (key) => {
-    if (!key.shiftKey && key.which == 13) {
-      send_message.submit();
+  if (messageInput) {
+    messageInput.onkeypress = (key) => {
+      if (!key.shiftKey && key.which == 13) {
+        send_message.submit();
+      }
     }
   }
-
-  const messageList = document.querySelector('.messages');
-  messageList.scrollTop = messageList.scrollHeight;
 }
