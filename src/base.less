@@ -1,3 +1,4 @@
+@import 'variables';
 @import 'forms';
 @import 'messages';
 
@@ -9,6 +10,10 @@ body {
   padding: 0;
   height: 100%;
   overflow: hidden;
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoie UI', 'Roboto',
+    'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans',
+    'Helvetica Neue', sans-serif;
+  color: #333;
 }
 
 .main {
@@ -35,37 +40,18 @@ p {
   margin-bottom: .5em;
 }
 
-.messages {
-  list-style: none;
-  padding: 0;
-  margin-right: -15px;
-  height: calc(100% - 14em);
-  overflow: scroll;
-
-  .message {
-    display: inline-block;
-    margin: 4px 0;
-    padding: 4px 6px;
-    border-radius: 5px;
-    margin-right: 13px;
-  }
-
-  .sent {
-    text-align: right;
-    .message {
-      background: #eee;
-    }
-  }
-
-  .received .message {
-    background: #eaf2fc;
-  }
-
+a {
+  color: #4288bb;
+          text-decoration-color: #bad7ec;
+  -webkit-text-decoration-color: #bad7ec;
+          text-decoration-skip: ink;
+  -webkit-text-decoration-skip: ink;
 }
 
-time {
-  display: block;
-  font-size: .7em;
-  color: #bbb;
-  margin-right: 13px;
+a:hover {
+  color: #115c94;
+          text-decoration-color: #115c94;
+  -webkit-text-decoration-color: #115c94;
+          text-decoration-skip: ink;
+  -webkit-text-decoration-skip: ink;
 }
