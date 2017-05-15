@@ -1,0 +1,105 @@
+label {
+  display: block;
+  font-size: .9rem;
+  font-weight: bold;
+}
+input {
+  margin-bottom: .5em;
+  padding: .3em .1em;
+}
+button,
+input[type="submit"] {
+  margin-top: .6em;
+  padding: .5em;
+}
+#login {
+  width: 240px;
+  display: flex;
+  flex-flow: column;
+  margin: 0 auto;
+}
+#send_message {
+  width: 100%;
+  position: fixed;
+  bottom: 1em;
+}
+textarea {
+  width: 90%;
+  max-width: 30rem;
+  height: 3em;
+}
+body {
+  font: 16px/1.5 -apple-system, BlinkMacSystemFont, 'Segoie UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  color: #333;
+}
+a {
+  color: #4288bb;
+  text-decoration-color: #bad7ec;
+  -webkit-text-decoration-color: #bad7ec;
+  text-decoration-skip: ink;
+  -webkit-text-decoration-skip: ink;
+}
+a:hover {
+  color: #115c94;
+  text-decoration-color: #115c94;
+  -webkit-text-decoration-color: #115c94;
+  text-decoration-skip: ink;
+  -webkit-text-decoration-skip: ink;
+}
+html {
+  height: 100%;
+}
+body {
+  padding: 0;
+  height: 100%;
+  overflow: hidden;
+}
+.main {
+  width: 90%;
+  height: 100%;
+  max-width: 30rem;
+  margin: 1em auto 2em;
+  position: relative;
+}
+nav {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+h1,
+h4 {
+  margin-top: 0;
+  margin-bottom: .5em;
+}
+p {
+  margin-bottom: .5em;
+}
+.messages {
+  list-style: none;
+  padding: 0;
+  margin-right: -15px;
+  height: calc(86%);
+  overflow: scroll;
+}
+.messages .message {
+  display: inline-block;
+  margin: 4px 0;
+  padding: 4px 6px;
+  border-radius: 5px;
+  margin-right: 13px;
+}
+.messages .sent {
+  text-align: right;
+}
+.messages .sent .message {
+  background: #eee;
+}
+.messages .received .message {
+  background: #eaf2fc;
+}
+time {
+  display: block;
+  font-size: .7em;
+  color: #bbb;
+  margin-right: 13px;
+}
