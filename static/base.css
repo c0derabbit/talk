@@ -20,12 +20,17 @@ input[type="submit"] {
   margin: 0 auto;
 }
 #send_message {
-  width: 100%;
+  width: 99%;
+  max-width: 30rem;
   position: fixed;
   bottom: 1em;
+  text-align: right;
 }
-textarea {
-  width: 90%;
+#send_message label {
+  text-align: left;
+}
+#send_message textarea {
+  width: 99%;
   max-width: 30rem;
   height: 3em;
 }
@@ -98,8 +103,4 @@ a:hover {
   -webkit-text-decoration-color: #115c94;
   text-decoration-skip: ink;
   -webkit-text-decoration-skip: ink;
-}
-.sr-only {
-  position: fixed;
-  left: -9999px;
 }
