@@ -1,8 +1,10 @@
 import os
 import sqlite3
-from datetime import datetime as d
+from datetime import datetime as time
 from flask import Flask, request, session, g, redirect, url_for, \
 	render_template, flash
+from flask.ext.moment import Moment
+from utils import *
 
 app = Flask(__name__)
 app.config.from_object(__name__)
@@ -14,6 +16,8 @@ app.config.update(dict(
 	USER2='Samu',
 	PASSWORD='secret'
 ))
+
+moment = Moment(app)
 
 def connect_db():
 	db = sqlite3.connect(app.config['DATABASE'])
@@ -36,6 +40,7 @@ def show_messages():
 		db = get_db()
 		cursor = db.execute('select sender, receiver, sent_at, message from messages order by id desc')
 		messages = cursor.fetchall()
+		messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in messages]
 		session['partner'] = 'Samu' if session['username'] == 'eszter' else 'Eszter'
 		return render_template('messages.html', messages=messages, partner=session['partner'])
 	except KeyError:
@@ -44,7 +49,7 @@ def show_messages():
 @app.route('/send', methods=['POST'])
 def send_message():
 	db = get_db()
-	current_datetime = d.now().strftime('%y.%m.%d %H:%m')
+	current_datetime = stringify_date(time.now())
 	db.execute('insert into messages (sender, receiver, sent_at, message) values (?, ?, ?, ?)',
 		[session['username'], session['partner'], current_datetime, request.form['message']])
 	db.commit()
