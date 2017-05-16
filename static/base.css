@@ -99,3 +99,7 @@ a:hover {
   text-decoration-skip: ink;
   -webkit-text-decoration-skip: ink;
 }
+.sr-only {
+  position: fixed;
+  left: -9999px;
+}
