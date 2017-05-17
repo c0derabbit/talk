@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime as time
 from flask import Flask, request, session, g, redirect, url_for, \
 	render_template, flash
-from flask.ext.moment import Moment
+from flask_moment import Moment
 from utils import *
 
 app = Flask(__name__)
