@@ -49,7 +49,7 @@ def show_messages():
 @app.route('/send', methods=['POST'])
 def send_message():
 	db = get_db()
-	current_datetime = stringify_date(time.now())
+	current_datetime = stringify_date(time.utcnow())
 	db.execute('insert into messages (sender, receiver, sent_at, message) values (?, ?, ?, ?)',
 		[session['username'], session['partner'], current_datetime, request.form['message']])
 	db.commit()
