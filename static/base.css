@@ -38,7 +38,7 @@ input[type="submit"] {
   list-style: none;
   padding: 0;
   margin-right: -15px;
-  height: calc(86%);
+  height: calc(100% - 280px);
   overflow: scroll;
 }
 .messages .sent {
