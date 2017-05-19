@@ -47,8 +47,8 @@ def show_messages():
 		cursor = db.execute('select sender, receiver, sent_at, message from messages order by id desc')
 		messages = cursor.fetchall()
 		messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in messages]
-		session['partner'] = 'Samu' if session['username'] == 'eszter' else 'Eszter'
-		return render_template('messages.html', messages=messages, partner=session['partner'])
+		session['partner'] = 'Samu' if session.get('username') == 'eszter' else 'Eszter'
+		return render_template('messages.html', messages=messages, partner=session.get('partner'))
 	except KeyError:
 		return redirect(url_for('login'))
 
@@ -57,7 +57,7 @@ def send_message():
 	db = get_db()
 	current_datetime = stringify_date(time.utcnow())
 	db.execute('insert into messages (sender, receiver, sent_at, message) values (?, ?, ?, ?)',
-		[session['username'], session['partner'], current_datetime, request.form['message']])
+		[session.get('username'), session.get('partner'), current_datetime, request.form['message']])
 	db.commit()
 	return redirect(url_for('show_messages'))
 
