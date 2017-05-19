@@ -81,6 +81,22 @@ def logout():
 	flash('You were logged out')
 	return redirect(url_for('login'))
 
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+	error = None
+	if session.get('logged_in'):
+		flash('You are already logged in as {}'.format(session.get('username')))
+		return redirect(url_for('show_messages'))
+	if request.method == 'POST':
+		if request.form['passwordCheck'] != '' and request.form['password'] != request.form['passwordCheck']:
+			error = 'Passwords don\'t match'
+		else:
+			flash('You\'re not signed up yet, this was just a mock')
+			# insert into db here
+			# also check if username taken
+			return redirect(url_for('login'))
+	return render_template('signup.html', error=error)
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404

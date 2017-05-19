@@ -13,7 +13,7 @@ input[type="submit"] {
   margin-top: .6em;
   padding: .5em;
 }
-#login {
+form:not(#send_message) {
   width: 240px;
   display: flex;
   flex-flow: column;
