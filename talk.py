@@ -6,6 +6,7 @@ from flask import Flask, request, session, g, redirect, url_for, \
 from flask_moment import Moment
 from utils import *
 
+
 app = Flask(__name__)
 app.config.from_object(__name__)
 app.config.update(dict(
@@ -18,6 +19,7 @@ app.config.update(dict(
 ))
 
 moment = Moment(app)
+
 
 def connect_db():
 	db = sqlite3.connect(app.config['DATABASE'])
@@ -35,10 +37,12 @@ def get_db():
 		g.sqlite_db = connect_db()
 	return g.sqlite_db
 
+
 @app.teardown_appcontext
 def close_db(error):
 	if hasattr(g, 'sqlite_db'):
 		g.sqlite_db.close()
+
 
 @app.route('/')
 def show_messages():
@@ -52,6 +56,7 @@ def show_messages():
 	except KeyError:
 		return redirect(url_for('login'))
 
+
 @app.route('/send', methods=['POST'])
 def send_message():
 	db = get_db()
@@ -60,6 +65,7 @@ def send_message():
 		[session.get('username'), session.get('partner'), current_datetime, request.form['message']])
 	db.commit()
 	return redirect(url_for('show_messages'))
+
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
@@ -75,11 +81,13 @@ def login():
 			return redirect(url_for('show_messages'))
 	return render_template('login.html', error=error)
 
+
 @app.route('/logout')
 def logout():
 	session.pop('logged_in', None)
 	flash('You were logged out')
 	return redirect(url_for('login'))
+
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -97,9 +105,11 @@ def signup():
 			return redirect(url_for('login'))
 	return render_template('signup.html', error=error)
 
+
 @app.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
+
 
 if __name__ == '__main__':
 	app.run()
