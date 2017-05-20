@@ -5,6 +5,7 @@ from flask import Flask, request, session, g, redirect, url_for, \
 	render_template, flash
 from flask_moment import Moment
 from utils import *
+from decorators import *
 
 
 app = Flask(__name__)
@@ -45,19 +46,18 @@ def close_db(error):
 
 
 @app.route('/')
+@login_required
 def show_messages():
-	try:
-		db = get_db()
-		cursor = db.execute('select sender, receiver, sent_at, message from messages order by id desc')
-		messages = cursor.fetchall()
-		messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in messages]
-		session['partner'] = 'Samu' if session.get('username') == 'eszter' else 'Eszter'
-		return render_template('messages.html', messages=messages, partner=session.get('partner'))
-	except KeyError:
-		return redirect(url_for('login'))
+	db = get_db()
+	cursor = db.execute('select sender, receiver, sent_at, message from messages order by id desc')
+	messages = cursor.fetchall()
+	messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in messages]
+	session['partner'] = 'Samu' if session.get('username') == 'eszter' else 'Eszter'
+	return render_template('messages.html', messages=messages, partner=session.get('partner'))
 
 
 @app.route('/send', methods=['POST'])
+@login_required
 def send_message():
 	db = get_db()
 	current_datetime = stringify_date(time.utcnow())
@@ -68,6 +68,7 @@ def send_message():
 
 
 @app.route('/login', methods=['GET', 'POST'])
+@only_show_if_not_logged_in
 def login():
 	error = None
 	if request.method == 'POST':
@@ -83,6 +84,7 @@ def login():
 
 
 @app.route('/logout')
+@login_required
 def logout():
 	session.pop('logged_in', None)
 	flash('You were logged out')
@@ -90,6 +92,7 @@ def logout():
 
 
 @app.route('/signup', methods=['GET', 'POST'])
+@only_show_if_not_logged_in
 def signup():
 	error = None
 	if session.get('logged_in'):
