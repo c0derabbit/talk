@@ -35,7 +35,15 @@ def login():
 	if request.method == 'POST':
 		# if request.form['username'] != app.config['USER1'] or request.form['username'] != app.config['USER2']:
 		# 	error = 'Invalid username'
-		if request.form['password'] != app.config['PASSWORD']:
+		db = get_db()
+		cursor = db.execute('select username, password from users where username is (?)',
+			[request.form['username']])
+		user = cursor.fetchone()
+		print(hash(request.form['password']))
+		print(user['password'])
+		if user == None:
+			error = 'Sorry, no such user.'
+		elif str(hash(request.form['password'])) != user['password']:
 			error = 'Incorrect password'
 		else:
 			session['logged_in'] = True
@@ -63,9 +71,12 @@ def signup():
 		if request.form['passwordCheck'] != '' and request.form['password'] != request.form['passwordCheck']:
 			error = 'Passwords don\'t match'
 		else:
-			flash('You\'re not signed up yet, this was just a mock')
-			# insert into db here
-			# also check if username taken
+			db = get_db()
+			# TODO check if username already exists
+			db.execute('insert into users (username, password) values (?, ?)',
+				[request.form['username'], hash(request.form['password'])])
+			db.commit()
+			flash('You registered successfully. Welcome to the club!')
 			return redirect(url_for('login'))
 	return render_template('signup.html', error=error)
 
