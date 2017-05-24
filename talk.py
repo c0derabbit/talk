@@ -1,22 +1,14 @@
-import os
 import sqlite3
 from datetime import datetime as time
 from flask import Flask, request, session, g, redirect, url_for, \
 	render_template, flash
 from flask_moment import Moment
 from utils import *
+from config import *
 
 
 app = Flask(__name__)
-app.config.from_object(__name__)
-app.config.update(dict(
-	# DATABASE=os.path.join(app.root_path, 'talk.db'),
-	DATABASE='/tmp/talk.db',
-	SECRET_KEY='dev key',
-	USER1='eszter',
-	USER2='Samu',
-	PASSWORD='secret'
-))
+app.config.update(dev_env)
 
 moment = Moment(app)
 
