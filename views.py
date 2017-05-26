@@ -4,6 +4,10 @@ from flask import Flask, request, session, redirect, url_for, \
 from talk import app, get_db
 from decorators import *
 from utils import *
+from argon2 import PasswordHasher
+from argon2.exceptions import VerificationError
+
+p = PasswordHasher(hash_len=256,salt_len=256)
 
 
 @app.route('/')
@@ -33,22 +37,19 @@ def send_message():
 def login():
 	error = None
 	if request.method == 'POST':
-		# if request.form['username'] != app.config['USER1'] or request.form['username'] != app.config['USER2']:
-		# 	error = 'Invalid username'
 		db = get_db()
 		cursor = db.execute('select username, password from users where username is (?)',
 			[request.form['username']])
 		user = cursor.fetchone()
-		print(hash(request.form['password']))
-		print(user['password'])
-		if user == None:
-			error = 'Sorry, no such user.'
-		elif str(hash(request.form['password'])) != user['password']:
-			error = 'Incorrect password'
-		else:
-			session['logged_in'] = True
-			session['username'] = request.form['username']
-			return redirect(url_for('show_messages'))
+		if user is not None:
+			try:
+				p.verify(user['password'], request.form['password'])
+				session['logged_in'] = True
+				session['username'] = request.form['username']
+				return redirect(url_for('show_messages'))
+			except VerificationError:
+				error = 'Incorrect username or password'
+		error = 'Incorrect username or password'
 	return render_template('login.html', error=error)
 
 
@@ -74,7 +75,7 @@ def signup():
 			db = get_db()
 			# TODO check if username already exists
 			db.execute('insert into users (username, password) values (?, ?)',
-				[request.form['username'], hash(request.form['password'])])
+				[request.form['username'], p.hash(request.form['password'])])
 			db.commit()
 			flash('You registered successfully. Welcome to the club!')
 			return redirect(url_for('login'))
