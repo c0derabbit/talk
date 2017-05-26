@@ -7,18 +7,31 @@ from utils import *
 from argon2 import PasswordHasher
 from argon2.exceptions import VerificationError
 
-p = PasswordHasher(hash_len=256,salt_len=256)
+p = PasswordHasher(hash_len=256, salt_len=256)
 
 
 @app.route('/')
 @login_required
-def show_messages():
+def dashboard():
 	db = get_db()
-	cursor = db.execute('select sender, receiver, sent_at, message from messages order by id desc')
+	cursor = db.execute('select username from users where username is not (?)',
+		[session.get('username')])
+	users = cursor.fetchall()
+	return render_template('dashboard.html', users=users)
+
+
+@app.route('/messages/<partner>')
+@login_required
+def show_messages(partner):
+	session['partner'] = partner
+	db = get_db()
+	cursor = db.execute('select sender, receiver, sent_at, message from messages\
+	 	where (sender is (?) and receiver is (?)) or\
+		(sender is (?) and receiver is (?)) order by id desc',
+		[session.get('username'), session.get('partner'), session.get('partner'), session.get('username')])
 	messages = cursor.fetchall()
 	messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in messages]
-	session['partner'] = 'Samu' if session.get('username') == 'eszter' else 'Eszter'
-	return render_template('messages.html', messages=messages, partner=session.get('partner'))
+	return render_template('messages.html', messages=messages, partner=partner)
 
 
 @app.route('/send', methods=['POST'])
@@ -29,7 +42,7 @@ def send_message():
 	db.execute('insert into messages (sender, receiver, sent_at, message) values (?, ?, ?, ?)',
 		[session.get('username'), session.get('partner'), current_datetime, request.form['message']])
 	db.commit()
-	return redirect(url_for('show_messages'))
+	return redirect(url_for('show_messages', partner=session.get('partner')))
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -46,7 +59,7 @@ def login():
 				p.verify(user['password'], request.form['password'])
 				session['logged_in'] = True
 				session['username'] = request.form['username']
-				return redirect(url_for('show_messages'))
+				return redirect(url_for('dashboard'))
 			except VerificationError:
 				error = 'Incorrect username or password'
 		error = 'Incorrect username or password'
@@ -68,7 +81,7 @@ def signup():
 	error = None
 	if session.get('logged_in'):
 		flash('You are already logged in as {}'.format(session.get('username')))
-		return redirect(url_for('show_messages'))
+		return redirect(url_for('dashboard'))
 
 	if request.method == 'POST':
 		db = get_db()
@@ -89,6 +102,7 @@ def signup():
 			return redirect(url_for('login'))
 
 	return render_template('signup.html', error=error)
+
 
 @app.route('/changepassword', methods=['GET', 'POST'])
 @login_required
@@ -112,7 +126,7 @@ def change_pw():
 				db.commit()
 				flash('Password updated, you are good to go.')
 
-				return redirect(url_for('show_messages'))
+				return redirect(url_for('dashboard'))
 
 		except VerificationError:
 			error = 'Your old password is incorrect'

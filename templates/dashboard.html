@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block body %}
+  {% if error %}<strong>Error: {{ error }}</strong>{% endif %}
+
+  {% if users %}
+    <h2>Choose someone to talk to</h2>
+    <ul>
+      {% for user in users %}
+      <li><a href="{{ url_for('show_messages', partner=user.username) }}">{{ user.username }}</a></li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Seems like you are the only one here.</p>
+  {% endif %}
+
+
+{% endblock %}
