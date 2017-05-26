@@ -50,6 +50,7 @@ def login():
 			except VerificationError:
 				error = 'Incorrect username or password'
 		error = 'Incorrect username or password'
+
 	return render_template('login.html', error=error)
 
 
@@ -86,7 +87,37 @@ def signup():
 			db.commit()
 			flash('You registered successfully. Welcome to the club!')
 			return redirect(url_for('login'))
+
 	return render_template('signup.html', error=error)
+
+@app.route('/changepassword', methods=['GET', 'POST'])
+@login_required
+def change_pw():
+	error = None
+	if request.method == 'POST':
+		db = get_db()
+		cursor = db.execute('select username, password from users where username is (?)',
+			[session.get('username')])
+		user = cursor.fetchone()
+
+		try:
+			p.verify(user['password'], request.form['old_password'])
+			if len(request.form['new_password']) < 8:
+				error = 'Your new password is too short. It should be at least 8 characters.'
+			elif request.form['new_password'] != request.form['new_password_check']:
+				error = 'Your new passwords don\'t match'
+			else:
+				db.execute('update users set password = (?) where username is (?)',
+					[p.hash(request.form['new_password']), session.get('username')])
+				db.commit()
+				flash('Password updated, you are good to go.')
+
+				return redirect(url_for('show_messages'))
+
+		except VerificationError:
+			error = 'Your old password is incorrect'
+
+	return render_template('changepassword.html', error=error)
 
 
 @app.errorhandler(404)

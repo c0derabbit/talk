@@ -13,7 +13,8 @@
         {% if not session.logged_in %}
           <a href="{{ url_for('login') }}">Log in</a>
         {% else %}
-          Welcome, {{ session.username }}. <a href="{{ url_for('logout') }}">Log out</a>
+          Welcome, {{ session.username }}. <a href="{{ url_for('logout') }}">Log out</a> /
+           <a href="{{ url_for('change_pw') }}">Change password</a>
         {% endif %}
       </nav>
 
