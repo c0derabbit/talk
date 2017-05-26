@@ -68,12 +68,19 @@ def signup():
 	if session.get('logged_in'):
 		flash('You are already logged in as {}'.format(session.get('username')))
 		return redirect(url_for('show_messages'))
+
 	if request.method == 'POST':
-		if request.form['passwordCheck'] != '' and request.form['password'] != request.form['passwordCheck']:
+		db = get_db()
+		cursor = db.execute('select username from users where username is (?)',
+			[request.form['username']])
+		user = cursor.fetchone()
+		if user is not None:
+			error = 'This username is already taken. Please choose another one.'
+		elif len(request.form['password']) < 8:
+			error = 'Your password is too short. It should be at least 8 characters.'
+		elif request.form['password'] != request.form['passwordCheck']:
 			error = 'Passwords don\'t match'
 		else:
-			db = get_db()
-			# TODO check if username already exists
 			db.execute('insert into users (username, password) values (?, ?)',
 				[request.form['username'], p.hash(request.form['password'])])
 			db.commit()
