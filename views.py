@@ -13,8 +13,8 @@ p = PasswordHasher(hash_len=256, salt_len=256)
 @app.route('/')
 @login_required
 def dashboard():
-	db = get_db()
-	cursor = db.execute('select username from users where username is not (?)',
+	db = get_db().cursor()
+	db.execute('select username from users where username is not (?)',
 		[session.get('username')])
 	users = cursor.fetchall()
 	return render_template('dashboard.html', users=users)
@@ -24,8 +24,8 @@ def dashboard():
 @login_required
 def show_messages(partner):
 	session['partner'] = partner
-	db = get_db()
-	cursor = db.execute('select sender, receiver, sent_at, message from messages\
+	cur = get_db().cursor()
+	cur.execute('select sender, receiver, sent_at, message from messages\
 	 	where (sender is (?) and receiver is (?)) or\
 		(sender is (?) and receiver is (?)) order by id desc',
 		[session.get('username'), session.get('partner'), session.get('partner'), session.get('username')])
@@ -37,10 +37,10 @@ def show_messages(partner):
 @app.route('/send', methods=['POST'])
 @login_required
 def send_message():
-	db = get_db()
+	db = get_db().cursor()
 	current_datetime = stringify_date(time.utcnow())
-	db.execute('insert into messages (sender, receiver, sent_at, message) values (?, ?, ?, ?)',
-		[session.get('username'), session.get('partner'), current_datetime, request.form['message']])
+	db.execute('insert into messages (sender, receiver, sent_at, message) values (%s, %s, %s, %s);',
+		(session.get('username'), session.get('partner'), current_datetime, request.form['message']))
 	db.commit()
 	return redirect(url_for('show_messages', partner=session.get('partner')))
 
@@ -50,10 +50,9 @@ def send_message():
 def login():
 	error = None
 	if request.method == 'POST':
-		db = get_db()
-		cursor = db.execute('select username, password from users where username is (?)',
-			[request.form['username']])
-		user = cursor.fetchone()
+		cur = get_db().cursor()
+		cur.execute("SELECT (username, password) FROM users WHERE username='eszter';")
+		user = cur.fetchone()
 		if user is not None:
 			try:
 				p.verify(user['password'], request.form['password'])
@@ -84,20 +83,20 @@ def signup():
 		return redirect(url_for('dashboard'))
 
 	if request.method == 'POST':
-		db = get_db()
-		cursor = db.execute('select username from users where username is (?)',
-			[request.form['username']])
-		user = cursor.fetchone()
-		if user is not None:
-			error = 'This username is already taken. Please choose another one.'
-		elif len(request.form['password']) < 8:
+		conn = get_db()
+		cur = conn.cursor()
+		# user = db.execute('select * from users where username is %s', (session.get('username')))
+		# user = db.execute('select username from users where username is eszter')
+		# if user is not None:
+		# 	error = 'This username is already taken. Please choose another one.'
+		if len(request.form['password']) < 8:
 			error = 'Your password is too short. It should be at least 8 characters.'
 		elif request.form['password'] != request.form['passwordCheck']:
 			error = 'Passwords don\'t match'
 		else:
-			db.execute('insert into users (username, password) values (?, ?)',
-				[request.form['username'], p.hash(request.form['password'])])
-			db.commit()
+			cur.execute("insert into users (username, password) values ('{}', E'{}');".format(
+				request.form['username'], p.hash(request.form['password'])))
+			conn.commit()
 			flash('You registered successfully. Welcome to the club!')
 			return redirect(url_for('login'))
 
@@ -121,8 +120,8 @@ def change_pw():
 			elif request.form['new_password'] != request.form['new_password_check']:
 				error = 'Your new passwords don\'t match'
 			else:
-				db.execute('update users set password = (?) where username is (?)',
-					[p.hash(request.form['new_password']), session.get('username')])
+				db.execute('update users set password = (%s) where username is (%s)',
+					(p.hash(request.form['new_password']), session.get('username')))
 				db.commit()
 				flash('Password updated, you are good to go.')
 

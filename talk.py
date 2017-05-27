@@ -1,4 +1,6 @@
 import sqlite3
+import psycopg2 # postgresql
+import urlparse
 from datetime import datetime as time
 from flask import Flask, request, session, g, redirect, url_for, \
 	render_template, flash
@@ -8,30 +10,26 @@ from config import *
 
 
 app = Flask(__name__)
-app.config.update(dev_env)
+app.config.update(prod_env)
 
 moment = Moment(app)
 
-def connect_db():
-	db = sqlite3.connect(app.config['DATABASE'])
-	db.row_factory = sqlite3.Row
-	return db
-
-def init_db():
-    db = get_db()
-    with app.open_resource('schema.sql', mode='r') as f:
-        db.cursor().executescript(f.read())
-    db.commit()
+urlparse.uses_netloc.append('postgres')
+db_url = urlparse.urlparse(app.config['DATABASE_URL'])
 
 def get_db():
-	if not hasattr(g, 'sqlite_db'):
-		g.sqlite_db = connect_db()
-	return g.sqlite_db
+	conn = psycopg2.connect(
+		database=db_url.path[1:],
+		user=db_url.username,
+		password=db_url.password,
+		host=db_url.hostname,
+		port=db_url.port
+	)
+	return conn
 
 @app.teardown_appcontext
 def close_db(error):
-	if hasattr(g, 'sqlite_db'):
-		g.sqlite_db.close()
+	get_db().close()
 
 from views import *
 

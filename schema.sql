@@ -1,6 +1,6 @@
 drop table if exists messages;
 create table messages(
-  id integer primary key autoincrement,
+  id serial primary key,
   sender text not null,
   receiver text not null,
   sent_at text not null,
@@ -9,7 +9,7 @@ create table messages(
 
 drop table if exists users;
 create table users(
-  id integer primary key autoincrement,
+  id serial primary key,
   username text not null,
-  password text not null
+  password bytea not null
 );
