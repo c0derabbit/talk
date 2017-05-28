@@ -14,6 +14,6 @@ def only_show_if_not_logged_in(f):
     def decorated_function(*args, **kwargs):
         if session.get('logged_in'):
             flash('You are already logged in.')
-            return redirect(url_for('show_messages'))
+            return redirect(url_for('dashboard'))
         return f(*args, **kwargs)
     return decorated_function

@@ -13,10 +13,10 @@ p = PasswordHasher(hash_len=256, salt_len=256)
 @app.route('/')
 @login_required
 def dashboard():
-	db = get_db().cursor()
-	db.execute('select username from users where username is not (?)',
-		[session.get('username')])
-	users = cursor.fetchall()
+	cur = get_db().cursor()
+	cur.execute("select username from users where username!='{}'".format(session.get('username')))
+	users = cur.fetchall()
+	users = [u[0] for u in users]
 	return render_template('dashboard.html', users=users)
 
 
@@ -25,11 +25,11 @@ def dashboard():
 def show_messages(partner):
 	session['partner'] = partner
 	cur = get_db().cursor()
-	cur.execute('select sender, receiver, sent_at, message from messages\
-	 	where (sender is (?) and receiver is (?)) or\
-		(sender is (?) and receiver is (?)) order by id desc',
-		[session.get('username'), session.get('partner'), session.get('partner'), session.get('username')])
-	messages = cursor.fetchall()
+	cur.execute("select sender, receiver, sent_at, message from messages\
+	 	where (sender='{0}' and receiver='{1}')\
+		or (sender='{1}' and receiver='{0}')\
+		order by id desc".format(session.get('username'), session.get('partner')))
+	messages = cur.fetchall()
 	messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in messages]
 	return render_template('messages.html', messages=messages, partner=partner)
 
@@ -37,11 +37,12 @@ def show_messages(partner):
 @app.route('/send', methods=['POST'])
 @login_required
 def send_message():
-	db = get_db().cursor()
+	conn = get_db()
+	cur = conn.cursor()
 	current_datetime = stringify_date(time.utcnow())
-	db.execute('insert into messages (sender, receiver, sent_at, message) values (%s, %s, %s, %s);',
+	cur.execute('insert into messages (sender, receiver, sent_at, message) values (%s, %s, %s, %s);',
 		(session.get('username'), session.get('partner'), current_datetime, request.form['message']))
-	db.commit()
+	conn.commit()
 	return redirect(url_for('show_messages', partner=session.get('partner')))
 
 
@@ -51,11 +52,12 @@ def login():
 	error = None
 	if request.method == 'POST':
 		cur = get_db().cursor()
-		cur.execute("SELECT (username, password) FROM users WHERE username='eszter';")
-		user = cur.fetchone()
-		if user is not None:
+		cur.execute("select username, password from users where username='{}'".format(request.form['username']))
+		user_props = cur.fetchone()
+		if user_props is not None:
+			password = str(user_props[1])
 			try:
-				p.verify(user['password'], request.form['password'])
+				p.verify(password, request.form['password'])
 				session['logged_in'] = True
 				session['username'] = request.form['username']
 				return redirect(url_for('dashboard'))
@@ -70,6 +72,8 @@ def login():
 @login_required
 def logout():
 	session.pop('logged_in', None)
+	session.pop('username')
+	session.pop('partner')
 	flash('You were logged out')
 	return redirect(url_for('login'))
 
@@ -78,18 +82,14 @@ def logout():
 @only_show_if_not_logged_in
 def signup():
 	error = None
-	if session.get('logged_in'):
-		flash('You are already logged in as {}'.format(session.get('username')))
-		return redirect(url_for('dashboard'))
-
 	if request.method == 'POST':
 		conn = get_db()
 		cur = conn.cursor()
-		# user = db.execute('select * from users where username is %s', (session.get('username')))
-		# user = db.execute('select username from users where username is eszter')
-		# if user is not None:
-		# 	error = 'This username is already taken. Please choose another one.'
-		if len(request.form['password']) < 8:
+		user = cur.execute("select username from users where username='{}'".format(request.form['username']))
+		user_props = cur.fetchone()
+		if user_props is not None:
+			error = 'This username is already taken. Please choose another one.'
+		elif len(request.form['password']) < 8:
 			error = 'Your password is too short. It should be at least 8 characters.'
 		elif request.form['password'] != request.form['passwordCheck']:
 			error = 'Passwords don\'t match'

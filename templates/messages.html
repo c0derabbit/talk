@@ -8,7 +8,6 @@
       {% for message in messages | reverse %}
         <li class="{{ 'sent' if message.sender == session['username'] else 'received'}}">
           <time>{{ moment(message.sent_at).fromNow(refresh=True) }}</time>
-          <time></time>
 
           <span class="message">
             {% for line in message.message.split('\n') %}
