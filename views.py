@@ -73,7 +73,6 @@ def login():
 def logout():
 	session.pop('logged_in', None)
 	session.pop('username')
-	session.pop('partner')
 	flash('You were logged out')
 	return redirect(url_for('login'))
 
@@ -85,7 +84,7 @@ def signup():
 	if request.method == 'POST':
 		conn = get_db()
 		cur = conn.cursor()
-		user = cur.execute("select username from users where username='{}'".format(request.form['username']))
+		cur.execute("select username from users where username='{}'".format(request.form['username']))
 		user_props = cur.fetchone()
 		if user_props is not None:
 			error = 'This username is already taken. Please choose another one.'
@@ -108,21 +107,22 @@ def signup():
 def change_pw():
 	error = None
 	if request.method == 'POST':
-		db = get_db()
-		cursor = db.execute('select username, password from users where username is (?)',
-			[session.get('username')])
-		user = cursor.fetchone()
-
+		conn = get_db()
+		cur = conn.cursor()
+		cur.execute("select password from users where username='{}'".format(session.get('username')))
+		user_pw = cur.fetchone()
+		password = str(user_pw[0])
 		try:
-			p.verify(user['password'], request.form['old_password'])
+			p.verify(password, request.form['old_password'])
 			if len(request.form['new_password']) < 8:
 				error = 'Your new password is too short. It should be at least 8 characters.'
 			elif request.form['new_password'] != request.form['new_password_check']:
 				error = 'Your new passwords don\'t match'
 			else:
-				db.execute('update users set password = (%s) where username is (%s)',
-					(p.hash(request.form['new_password']), session.get('username')))
-				db.commit()
+				cur.execute("update users set password='{}' where username='{}'".format(
+					p.hash(request.form['new_password']), session.get('username')
+				))
+				conn.commit()
 				flash('Password updated, you are good to go.')
 
 				return redirect(url_for('dashboard'))
