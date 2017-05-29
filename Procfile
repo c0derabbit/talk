@@ -1,1 +1,1 @@
-web: export FLASK_APP=talk.py && flask run
+web: gunicorn talk:app
