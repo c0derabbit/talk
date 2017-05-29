@@ -11,7 +11,7 @@
 
           <span class="message">
             {% for line in message.message.split('\n') %}
-              {{ line }}<br>
+              {{ line.decode('utf-8').strip() }}<br>
             {% endfor %}
           </span>
         </li>
