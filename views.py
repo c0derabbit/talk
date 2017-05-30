@@ -8,15 +8,15 @@ from argon2 import PasswordHasher
 from argon2.exceptions import VerificationError
 
 p = PasswordHasher(hash_len=256, salt_len=256)
+conn = get_db()
+cur = conn.cursor()
 
 
 @app.route('/')
 @login_required
 def dashboard():
-	cur = get_db().cursor()
 	cur.execute("select username from users where username!='{}'".format(session.get('username')))
-	users = cur.fetchall()
-	users = [u[0] for u in users]
+	users = [u[0] for u in cur.fetchall()]
 	return render_template('dashboard.html', users=users)
 
 
@@ -24,21 +24,17 @@ def dashboard():
 @login_required
 def show_messages(partner):
 	session['partner'] = partner
-	cur = get_db().cursor()
 	cur.execute("select sender, receiver, sent_at, message from messages\
 	 	where (sender='{0}' and receiver='{1}')\
 		or (sender='{1}' and receiver='{0}')\
 		order by id desc".format(session.get('username'), session.get('partner')))
-	messages = cur.fetchall()
-	messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in messages]
+	messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in cur.fetchall()]
 	return render_template('messages.html', messages=messages, partner=partner)
 
 
 @app.route('/send', methods=['POST'])
 @login_required
 def send_message():
-	conn = get_db()
-	cur = conn.cursor()
 	current_datetime = stringify_date(time.utcnow())
 	cur.execute('insert into messages (sender, receiver, sent_at, message) values (%s, %s, %s, %s);',
 		(session.get('username'), session.get('partner'), current_datetime, request.form['message']))
@@ -51,7 +47,6 @@ def send_message():
 def login():
 	error = None
 	if request.method == 'POST':
-		cur = get_db().cursor()
 		cur.execute("select username, password from users where username='{}'".format(request.form['username']))
 		user_props = cur.fetchone()
 		if user_props is not None:
@@ -82,8 +77,6 @@ def logout():
 def signup():
 	error = None
 	if request.method == 'POST':
-		conn = get_db()
-		cur = conn.cursor()
 		cur.execute("select username from users where username='{}'".format(request.form['username']))
 		user_props = cur.fetchone()
 		if user_props is not None:
@@ -107,11 +100,8 @@ def signup():
 def change_pw():
 	error = None
 	if request.method == 'POST':
-		conn = get_db()
-		cur = conn.cursor()
 		cur.execute("select password from users where username='{}'".format(session.get('username')))
-		user_pw = cur.fetchone()
-		password = str(user_pw[0])
+		password = str(cur.fetchone()[0])
 		try:
 			p.verify(password, request.form['old_password'])
 			if len(request.form['new_password']) < 8:
