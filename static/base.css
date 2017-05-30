@@ -91,6 +91,10 @@ p {
   margin: 0 auto .5em;
 }
 a {
+  color: #333;
+  text-decoration: none;
+}
+a:not(h1 > a) {
   color: #4288bb;
   text-decoration-color: #bad7ec;
   -webkit-text-decoration-color: #bad7ec;
@@ -98,6 +102,10 @@ a {
   -webkit-text-decoration-skip: ink;
 }
 a:hover {
+  color: #595959;
+  text-decoration: none;
+}
+a:hover:not(h1 > a:hover) {
   color: #115c94;
   text-decoration-color: #115c94;
   -webkit-text-decoration-color: #115c94;

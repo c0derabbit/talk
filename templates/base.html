@@ -8,7 +8,7 @@
   </head>
   <body>
     <div class="main">
-      <h1>Talk</h1>
+      <h1><a href="{{ url_for('dashboard') }}">Talk</a></h1>
       <nav>
         {% if not session.logged_in %}
           <a href="{{ url_for('login') }}">Log in</a>

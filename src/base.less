@@ -35,17 +35,27 @@ p {
 }
 
 a {
-  color: @linkColor;
-          text-decoration-color: @linkAccent;
-  -webkit-text-decoration-color: @linkAccent;
-          text-decoration-skip: ink;
-  -webkit-text-decoration-skip: ink;
+  color: @textColor;
+  text-decoration: none;
+
+  &:not(h1 > a) {
+    color: @linkColor;
+            text-decoration-color: @linkAccent;
+    -webkit-text-decoration-color: @linkAccent;
+            text-decoration-skip: ink;
+    -webkit-text-decoration-skip: ink;
+  }
 }
 
 a:hover {
-  color: @linkHover;
-          text-decoration-color: @linkHover;
-  -webkit-text-decoration-color: @linkHover;
-          text-decoration-skip: ink;
-  -webkit-text-decoration-skip: ink;
+  color: lighten(@textColor, 15%);
+  text-decoration: none;
+
+  &:not(h1 > a:hover) {
+    color: @linkHover;
+            text-decoration-color: @linkHover;
+    -webkit-text-decoration-color: @linkHover;
+            text-decoration-skip: ink;
+    -webkit-text-decoration-skip: ink;
+  }
 }
