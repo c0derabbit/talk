@@ -7,6 +7,20 @@ label {
   color: @labelColor;
 }
 
+input,
+textarea {
+  border: 1px solid @lightTextColor;
+  border-radius: 4px;
+  background: transparent;
+  outline: none;
+  color: @textColor;
+
+  &:focus {
+    outline: none;
+    border: 1px solid @textColor;
+  }
+}
+
 input {
   margin-bottom: .5em;
   padding: .3em .1em;
@@ -16,6 +30,17 @@ button,
 input[type="submit"] {
   margin-top: .6em;
   padding: .5em;
+  border-radius: 4px;
+  border: 1px solid @linkColor;
+  color: @linkColor;
+  font-weight: bold;
+
+  &:hover,
+  &:focus {
+    background: @linkColor;
+    color: white;
+    cursor: pointer;
+  }
 }
 
 form:not(#send_message) {
