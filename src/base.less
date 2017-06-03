@@ -10,7 +10,7 @@ body,
 
 body {
   font: 16px/1.5 @primaryFont;
-  color: @textColor;
+  color: @dark;
   padding: 0;
   overflow: hidden;
 }
@@ -35,29 +35,25 @@ p {
 }
 
 a {
-  color: @textColor;
+  color: @dark;
   text-decoration: none;
 
   &:not(h1 > a) {
-    color: @linkColor;
+    color: @accent;
     text-decoration: underline;
-            text-decoration-color: @linkAccent;
-    -webkit-text-decoration-color: @linkAccent;
+            text-decoration-color: @lightAccent;
+    -webkit-text-decoration-color: @lightAccent;
             text-decoration-skip: ink;
     -webkit-text-decoration-skip: ink;
   }
 }
 
 a:hover {
-  color: lighten(@textColor, 15%);
-  text-decoration: none;
+  color: lighten(@dark, 15%);
 
   &:not(h1 > a:hover) {
-    color: @linkHover;
-    text-decoration: underline;
-            text-decoration-color: @linkHover;
-    -webkit-text-decoration-color: @linkHover;
-            text-decoration-skip: ink;
-    -webkit-text-decoration-skip: ink;
+    color: @darkAccent;
+            text-decoration-color: @darkAccent;
+    -webkit-text-decoration-color: @darkAccent;
   }
 }

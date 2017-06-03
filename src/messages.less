@@ -2,18 +2,18 @@
   list-style: none;
   padding: 0;
   margin-right: -15px;
-  height: calc(~'100% - 280px');
+  height: calc(~'100% - 240px');
   overflow: scroll;
 
   .sent {
     text-align: right;
     .message {
-      background: @sentMessage;
+      background: @bgColor;
     }
   }
 
   .received .message {
-    background: @receivedMessage;
+    background: @bgAccent;
   }
 
   .message {
@@ -26,8 +26,7 @@
   time {
     display: block;
     font-size: .7rem;
-    color: @lightTextColor;
-    margin-right: 13px;
-    margin-top: 6px;
+    color: @light;
+    margin: 6px 13px 0 0;
   }
 }

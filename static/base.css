@@ -3,13 +3,19 @@ label {
   font-size: .9rem;
   font-weight: bold;
   color: #777;
+  text-align: left;
+}
+input,
+button,
+textarea {
+  margin-bottom: .5em;
+  padding: .6em .5em .5em;
+  border-radius: 4px;
+  background: transparent;
 }
 input,
 textarea {
   border: 1px solid #bbb;
-  border-radius: 4px;
-  background: transparent;
-  outline: none;
   color: #333;
 }
 input:focus,
@@ -17,15 +23,9 @@ textarea:focus {
   outline: none;
   border: 1px solid #333;
 }
-input {
-  margin-bottom: .5em;
-  padding: .3em .1em;
-}
 button,
 input[type="submit"] {
   margin-top: .6em;
-  padding: .5em;
-  border-radius: 4px;
   border: 1px solid #4288bb;
   color: #4288bb;
   font-weight: bold;
@@ -48,22 +48,23 @@ form:not(#send_message) {
   width: 99%;
   max-width: 30rem;
   position: fixed;
-  bottom: 1em;
+  bottom: 0;
   text-align: right;
 }
-#send_message label {
-  text-align: left;
-}
 #send_message textarea {
-  width: 99%;
-  max-width: 30rem;
-  height: 3em;
+  width: calc(100% - 1em);
+  max-width: calc(@maxWidth - 1em);
+  height: 2.4em;
+  margin-bottom: 0;
+}
+#send_message input[type="submit"] {
+  margin-top: 0;
 }
 .messages {
   list-style: none;
   padding: 0;
   margin-right: -15px;
-  height: calc(100% - 280px);
+  height: calc(100% - 240px);
   overflow: scroll;
 }
 .messages .sent {
@@ -85,8 +86,7 @@ form:not(#send_message) {
   display: block;
   font-size: .7rem;
   color: #bbb;
-  margin-right: 13px;
-  margin-top: 6px;
+  margin: 6px 13px 0 0;
 }
 html,
 body,
@@ -129,13 +129,9 @@ a:not(h1 > a) {
 }
 a:hover {
   color: #595959;
-  text-decoration: none;
 }
 a:hover:not(h1 > a:hover) {
   color: #115c94;
-  text-decoration: underline;
   text-decoration-color: #115c94;
   -webkit-text-decoration-color: #115c94;
-  text-decoration-skip: ink;
-  -webkit-text-decoration-skip: ink;
 }

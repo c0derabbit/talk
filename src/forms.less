@@ -4,40 +4,41 @@ label {
   display: block;
   font-size: .9rem;
   font-weight: bold;
-  color: @labelColor;
+  color: @mid;
+  text-align: left;
+
+}
+
+input,
+button,
+textarea {
+  margin-bottom: .5em;
+  padding: .6em .5em .5em;
+  border-radius: 4px;
+  background: transparent;
 }
 
 input,
 textarea {
-  border: 1px solid @lightTextColor;
-  border-radius: 4px;
-  background: transparent;
-  outline: none;
-  color: @textColor;
+  border: 1px solid @light;
+  color: @dark;
 
   &:focus {
     outline: none;
-    border: 1px solid @textColor;
+    border: 1px solid @dark;
   }
-}
-
-input {
-  margin-bottom: .5em;
-  padding: .3em .1em;
 }
 
 button,
 input[type="submit"] {
   margin-top: .6em;
-  padding: .5em;
-  border-radius: 4px;
-  border: 1px solid @linkColor;
-  color: @linkColor;
+  border: 1px solid @accent;
+  color: @accent;
   font-weight: bold;
 
   &:hover,
   &:focus {
-    background: @linkColor;
+    background: @accent;
     color: white;
     cursor: pointer;
   }
@@ -54,16 +55,17 @@ form:not(#send_message) {
   width: 99%;
   max-width: @maxWidth;
   position: fixed;
-  bottom: 1em;
+  bottom: 0;
   text-align: right;
 
-  label {
-    text-align: left;
+  textarea {
+    width: calc(~'100% - 1em');
+    max-width: calc(~'@maxWidth - 1em');
+    height: 2.4em;
+    margin-bottom: 0;
   }
 
-  textarea {
-    width: 99%;
-    max-width: @maxWidth;
-    height: 3em;
+  input[type="submit"] {
+    margin-top: 0;
   }
 }
