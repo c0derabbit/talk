@@ -1,5 +1,5 @@
 from datetime import datetime as time
-from flask import Flask, request, session, redirect, url_for, \
+from flask import Flask, Response, request, session, redirect, url_for, \
 	render_template, flash
 from talk import app, get_db
 from decorators import *
@@ -20,6 +20,14 @@ def dashboard():
 	return render_template('dashboard.html', users=users)
 
 
+def stream_template(template, context**):
+	app.update_template_context(context)
+	t = app.jinja_env.get_template(template_name)
+	rv = t.stream(context)
+	rv.enable_buffering(5)
+	return rv
+
+
 @app.route('/messages/<partner>')
 @login_required
 def show_messages(partner):
@@ -29,7 +37,7 @@ def show_messages(partner):
 		or (sender='{1}' and receiver='{0}')\
 		order by id desc".format(session.get('username'), session.get('partner')))
 	messages = [{'sender': m[0], 'receiver': m[1], 'sent_at': parse_date(m[2]), 'message': m[3]} for m in cur.fetchall()]
-	return render_template('messages.html', messages=messages, partner=partner)
+	return Response(stream_template('messages.html', messages=messages, partner=partner))
 
 
 @app.route('/send', methods=['POST'])
